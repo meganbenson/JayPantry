@@ -1,0 +1,1 @@
+getJSArrayData($data,$xscale,$yscale,$type);
