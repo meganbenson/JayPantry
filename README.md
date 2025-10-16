@@ -1,34 +1,18 @@
-This is the Final Repository for the Food Pantry.  A project started at Etown in CS 341 - Software Engineering in 2022.
-It was the class project in 2023 and is currently in the process of rolling out in our on-campus food pantry in the Fall
-of 2024.  This respository was created to support and track the bugs discovered in rollout.
-
-This project has inventory tracking and reporting.  It allows users to scan id badges and login.
-Users register and then can scan to fill their cart.
-They then check out.  All data recorded should populate the reports area for Pantry staff.
-
-Also a temperature sensor was built with a PiBoard and is operational in the pantry fidge to automate this task for staff.
-
-
-Any questions please email Professor Nancy Reddig at reddign@etown.edu.
-
-
-Currently known issues are part of the Sprint Task list for any team willing to take on the project at:
-
-Task SSH-1	
-It is reported that the id scanner is not working to log users into to the Ipad.  We need to test to confirm and then meet ITS there to resolve.
-
-Task SSH-2	
-Javita would like more granularity on the Temperature Chart.  (Basically Click on a date and see all temps for that day by hour.  Maybe to click even on more layer deeper).
-
-Task SSH-3	
-The CHECKOUT feature doesn't clear the cart or add the items from the cart to the other table.  This is a series of SQL statements in on file that is not working.
-This would take examination of the Data Model verses the queries to determine the bug.  A change to the data model late in development is most likely the cause.
-
-Task SSH-4	
-We need to print labels for all inventory items to place on the shelfs. A labels button that exports the name, number, and barcode would be best for this.
-
-Task SSH-5	
-Someone needs to help the food pantry staff enter all the inventory items into the system and train them on how the system will work to get it up and running.
-
- 
-
+Project Overview
+The Food Pantry Project is designed for the Jay Pantry located on campus to manage inventory, track users of the pantry, and handle checkout processes. The goal of this system is to make it easier for the donation center, the student workers, and the consumers with a user-friendly website connected to a functional database. 
+We are working on the finishing touches of this project. There is currently a bug in the checkout feature, we need to add labels to the food in the pantry, and we need to talk to the donation center on how to implement the pantry at Elizabethtown. 
+Task SSH-1 – Fix Checkout Functionality
+Problem: The current "checkout" feature fails to remove items from the user's cart or transfer them to the "purchase" table.
+Goal:  Find where the problem is using the data model. The last group told us that the issue may have arisen from a mismatch between the database structure and the final queries they made.
+Outcome: When a user completes a checkout, the system removes items from the cart and adds them to the checkout table. Once the user completes the transaction, the system clears the shopping cart.
+Task SSH-2 – Add Label Export Feature
+Goal: Create a "Print Labels" button that allows users to export inventory information (item name, item number, and barcode)
+Outcome: The system will generate printable labels for pantry shelves, improving organization and restocking efficiency.
+Task SSH-3 – Data Entry and Staff Training
+Goal: Meet with the food pantry staff to enter all current inventory items into the database and train staff on how to use the system for daily operations. 
+Outcome: Ensure that the donation center fully implements the system and prepares it for use at Elizabethtown.
+Expected Results
+By the end of these tasks, the Food Pantry System will:
+Have a fully functional checkout process.
+Support exportable shelf labels for easier inventory management.
+Be ready for real-world use by pantry staff with complete data and training.
