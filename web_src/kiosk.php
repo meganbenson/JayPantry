@@ -2,6 +2,8 @@
 // ini_set('display_errors', 1);
 // error_reporting(E_ALL & ~E_NOTICE);
 session_start();
+//https://bluejaypantry.etowndb.com/web_src/kiosk.php?forceLogin=YES
+// FOR TESTING PURPOSES ONLY - auto-login a test user
 if(isset($_GET["forceLogin"]) && $_GET["forceLogin"]=="YES"){
      $_SESSION["LoginStatus"] = "YES";
      $_SESSION["isAdmin"] = false;
