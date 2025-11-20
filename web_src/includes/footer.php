@@ -10,7 +10,8 @@ function addInventoryItem(){
 
 }
 function getLabels(){
-  location.href = "index.php?page=labels";
+  //location.href = "index.php?page=labels";
+  location.href = "print_barcode.php";
 }
 function addItem(id,qty){
   location.href = "utils/addToCart.php?id="+id+"&qty="+qty;
