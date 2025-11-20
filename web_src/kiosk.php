@@ -2,6 +2,15 @@
 // ini_set('display_errors', 1);
 // error_reporting(E_ALL & ~E_NOTICE);
 session_start();
+if(isset($_GET["forceLogin"]) && $_GET["forceLogin"]=="YES"){
+     $_SESSION["LoginStatus"] = "YES";
+     $_SESSION["isAdmin"] = false;
+     $_SESSION["error"] = "";
+     $_SESSION["userId"] = "10";
+    //  echo "I AM HERE";
+    //  print_r($_SESSION);
+    //  exit;
+}
 
 require_once "includes/config.php";
 require_once "classes/DatabaseAPIConnection.php";
