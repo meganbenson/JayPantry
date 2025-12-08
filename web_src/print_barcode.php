@@ -2,42 +2,31 @@
 require_once "includes/config.php";
 require_once "classes/DatabaseAPIConnection.php";
 
-/*
----------------------------------------------------------
- FETCH INPUTS (MORE ROBUST THAN ORIGINAL)
----------------------------------------------------------
-*/
 
-// Default fallback values your API will accept
-$catID = isset($_GET["catID"]) && $_GET["catID"] !== "" ? $_GET["catID"] : 0;
-$id    = isset($_GET["id"])    && $_GET["id"]    !== "" ? $_GET["id"]    : 0;
+// These must use "" (empty string) or the API will reject them.
+$catID = isset($_GET["catID"]) ? $_GET["catID"] : "";
+$id    = isset($_GET["id"])    ? $_GET["id"]    : "";
 
 // Number of barcode copies per product
 $copies = isset($_GET["copies"]) ? intval($_GET["copies"]) : 1;
 if ($copies <= 0) { $copies = 1; }
 
-/*
----------------------------------------------------------
- FETCH PRODUCTS FROM API (SAME AS LABELS)
----------------------------------------------------------
-*/
+
 
 $fullUrl = $url . "/data_src/api/products/read.php";
 
 $vars = [
     "APIKEY" => $api_key,
+    "catID"  => $catID,   // empty string = “no category filter”
+    "id"     => $id       // empty string = “no id filter”
 ];
-
-// Only send catID or id if actually provided
-if ($catID !== null) $vars["catID"] = $catID;
-if ($id !== null)    $vars["id"]    = $id;
 
 $response = DatabaseAPIConnection::get($fullUrl, $vars);
 $products = json_decode($response, true);
 
-// If API returns invalid format
-if (!is_array($products) || count($products) === 0) {
-    die("No products found.");
+// Validate JSON response format
+if ($products === null || !is_array($products)) {
+    die("Invalid product response from API.");
 }
 
 ?>
@@ -74,9 +63,9 @@ if (!is_array($products) || count($products) === 0) {
 <div class="sheet">
 <?php 
 foreach ($products as $p): 
-    // The barcode number is ALWAYS the productID
     if (!isset($p["productID"])) continue;
-    $barcodeValue = $p["productID"];
+
+    $barcodeValue = $p["productID"];  // barcode = productID
 
     for ($i = 0; $i < $copies; $i++):
 ?>
