@@ -8,8 +8,9 @@ require_once "classes/DatabaseAPIConnection.php";
 ---------------------------------------------------------
 */
 
-$catID = isset($_GET["catID"]) && $_GET["catID"] !== "" ? $_GET["catID"] : null;
-$id    = isset($_GET["id"])    && $_GET["id"]    !== "" ? $_GET["id"]    : null;
+// Default fallback values your API will accept
+$catID = isset($_GET["catID"]) && $_GET["catID"] !== "" ? $_GET["catID"] : 0;
+$id    = isset($_GET["id"])    && $_GET["id"]    !== "" ? $_GET["id"]    : 0;
 
 // Number of barcode copies per product
 $copies = isset($_GET["copies"]) ? intval($_GET["copies"]) : 1;
