@@ -2,84 +2,120 @@
 require_once "includes/config.php";
 require_once "classes/DatabaseAPIConnection.php";
 
+// Get the product ID from URL (0 means print all)
+$productID = isset($_GET['productID']) ? intval($_GET['productID']) : 0;
 
-// These must use "" (empty string) or the API will reject them.
-$catID = isset($_GET["catID"]) ? $_GET["catID"] : "";
-$id    = isset($_GET["id"])    ? $_GET["id"]    : "";
-
-// Number of barcode copies per product
-$copies = isset($_GET["copies"]) ? intval($_GET["copies"]) : 1;
-if ($copies <= 0) { $copies = 1; }
-
-
-
-$fullUrl = $url . "/data_src/api/products/read.php";
-
-$vars = [
-    "APIKEY" => $api_key,
-    "catID"  => $catID,   // empty string = “no category filter”
-    "id"     => $id       // empty string = “no id filter”
-];
-
-$response = DatabaseAPIConnection::get($fullUrl, $vars);
-$products = json_decode($response, true);
-
-// Validate JSON response format
-if ($products === null || !is_array($products)) {
-    die("Invalid product response from API.");
+// Number of labels per product
+$labelsPerPage = isset($_GET['labels']) ? intval($_GET['labels']) : 30;
+if ($labelsPerPage <= 0 || $labelsPerPage > 30) {
+    $labelsPerPage = 30;
 }
 
+// -------------------------
+// Print ALL product barcodes
+// -------------------------
+if ($productID === 0) {
+
+    // API path for reading all products
+    $fullUrl = $url . "/data_src/api/products/read.php";
+
+    // API parameters
+    $vars = [
+        "APIKEY" => $api_key,
+        "catID"  => "",
+        "id"     => ""
+    ];
+
+    // Call API
+    $web_string = DatabaseAPIConnection::get($fullUrl, $vars);
+    $allProducts = json_decode($web_string);
+
+    // No products returned
+    if (!is_array($allProducts) || count($allProducts) === 0) {
+        die("No products found.");
+    }
+    ?>
+    
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Print All Barcodes</title>
+        <style>
+            @page { size: 8.5in 11in; margin: 0.5in; }
+            .sheet {
+                width: 7.5in;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: repeat(3, 2.5in);
+                grid-auto-rows: 1in;
+            }
+            .label {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.05in;
+            }
+            .label img { 
+                max-width: 100%; 
+                max-height: 100%; 
+            }
+        </style>
+    </head>
+    <body onload="window.print();">
+        <div class="sheet">
+            <?php foreach ($allProducts as $p): ?>
+                <?php for ($i = 0; $i < $labelsPerPage; $i++): ?>
+                    <div class="label">
+                        <img src="barcode.php?s=code128&d=<?= $p->productID ?>&f=png">
+                    </div>
+                <?php endfor; ?>
+            <?php endforeach; ?>
+        </div>
+    </body>
+    </html>
+
+    <?php
+    exit;
+}
+
+// -------------------------
+// Print ONE product barcode
+// -------------------------
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Print Barcodes</title>
-
-<style>
-.sheet {
-    width: 7.5in;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(3, 2.5in);
-    grid-auto-rows: 1in;
-}
-.label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.05in;
-}
-.label img {
-    max-width: 100%;
-    max-height: 100%;
-}
-</style>
-
+    <meta charset="UTF-8">
+    <title>Print Barcode</title>
+    <style>
+        @page { size: 8.5in 11in; margin: 0.5in; }
+        .sheet {
+            width: 7.5in;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 2.5in);
+            grid-auto-rows: 1in;
+        }
+        .label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.05in;
+        }
+        .label img { 
+            max-width: 100%; 
+            max-height: 100%; 
+        }
+    </style>
 </head>
-
 <body onload="window.print();">
-
-<div class="sheet">
-<?php 
-foreach ($products as $p): 
-    if (!isset($p["productID"])) continue;
-
-    $barcodeValue = $p["productID"];  // barcode = productID
-
-    for ($i = 0; $i < $copies; $i++):
-?>
-    <div class="label">
-        <img
-            src="barcode.php?s=code128&code=<?= urlencode($barcodeValue) ?>&f=png"
-            alt="Barcode for <?= htmlspecialchars($p['productName'] ?? 'Item') ?>"
-        >
+    <div class="sheet">
+        <?php for ($i = 0; $i < $labelsPerPage; $i++): ?>
+            <div class="label">
+                <img src="barcode.php?s=code128&d=<?= $productID ?>&f=png">
+            </div>
+        <?php endfor; ?>
     </div>
-<?php
-    endfor;
-endforeach;
-?>
-</div>
-
 </body>
 </html>

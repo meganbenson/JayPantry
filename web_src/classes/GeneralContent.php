@@ -33,46 +33,59 @@ class GeneralContent{
                
     
 	}
-	public static function getAllProductsDisplay($products,$title="INVENTORY",$button="addtocart", $button2=null, $button3=null){
+        public static function getAllProductsDisplay($products, $title="INVENTORY", $button="addtocart", $button2=null, $button3=null){
+            
+            $html = "<div class='w3-container' style='padding:30px 10px'>";
+            $html .= "<h3 class='w3-center'>".$title."</h3>";
 
-       //Added a comment test
-        $html = "<div class='w3-container' style='padding:30px 10px'>";
-        $html .=  "<h3 class='w3-center'>".$title."</h3>";
-        if($title=="EDIT INVENTORY"){
-          $html .= GeneralContent::getAddInventoryButton();
-        }
-	if($title=="EDIT INVENTORY"){
-          $html .= GeneralContent::getLabelsButton();
-        }
+            if ($title == "EDIT INVENTORY") {
+                $html .= GeneralContent::getAddInventoryButton();
+                $html .= GeneralContent::getLabelsButton();
+            }
 
-        $count = 0;
-        $divComplete = true; 
-        
-        if(is_array($products) && count($products)>0){
-          
-            foreach($products as $product){
-                if($count%3==0){
-                    $divComplete = false;
-                    $html .= "<div class='w3-row-padding' style='margin-top:64px'>";
+            $count = 0;
+            $divComplete = true;
+
+            if (is_array($products) && count($products) > 0) {
+
+                foreach ($products as $product) {
+
+                    if ($count % 3 == 0) {
+                        $divComplete = false;
+                        $html .= "<div class='w3-row-padding' style='margin-top:64px'>";
+                    }
+
+                    $html .= GeneralContent::getIndividualProductDisplay($product, $button, $button2, $button3);
+
+                    if ($count % 3 == 2) {
+                        $divComplete = true;
+                        $html .= "</div>";
+                    }
+
+                    $count++;
                 }
-                $html .= GeneralContent::getIndividualProductDisplay($product,$button,$button2,$button3);
-                if($count%3==2){
-                    $divComplete = true;
+
+                if (!$divComplete) {
                     $html .= "</div>";
                 }
-                $count++;
             }
-            if(!$divComplete){
-                $html .= "</div>";
+
+            // ⭐ ADD PRINT ALL BARCODE BUTTON (only on Edit Inventory page)
+            if ($title == "EDIT INVENTORY") {
+                $html .= '<div class="w3-center" style="margin-top:40px;">
+                            <a href="print_barcode.php?productID=0"
+                              target="_blank"
+                              class="w3-button w3-blue w3-xlarge"
+                              style="padding:14px 28px;">
+                                Print All Barcodes
+                            </a>
+                          </div>';
             }
-            
+
+            $html .= "</div>";
+            return $html;
         }
-    
-        
-        $html .= "</div>";
-        return $html;
-               
-    }
+
     public static function getIndividualProductDisplay($product,$button,$button2,$button3){ //FIX?
         //die($product->qty);
         $display = "<div class='w3-col l3 m6 w3-margin-bottom w3-center'>";
@@ -608,5 +621,7 @@ class GeneralContent{
       return $formHTML;
   }
   
+
+
 }
 ?>
